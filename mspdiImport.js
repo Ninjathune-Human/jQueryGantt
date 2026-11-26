@@ -77,11 +77,26 @@ var MSPDI = (function () {
     return {name: text(cal, "Name", ""), off: off, dates: dates, count: Object.keys(dates).length};
   }
 
+  var current = null; // calendrier en place, au format JSON : {name, offDays: [0, 6], holidays: ["2027-03-29", ...]}
+
   // Remplace la règle des jours chômés de jQueryGantt (samedi et dimanche, sans fériés) par celle du fichier
   function installCalendar(cal) {
     window.isHoliday = function (date) {
       return cal.off[date.getDay()] === true || cal.dates[dayKey(date)] === true;
     };
+    current = {
+      name: cal.name,
+      offDays: Object.keys(cal.off).map(Number),
+      holidays: Object.keys(cal.dates).map(function (k) { return k.replace(/_/g, "-"); }).sort()
+    };
+  }
+
+  // Calendrier porté par un projet JSON (clé « calendar »)
+  function useCalendar(c) {
+    var off = {}, dates = {};
+    (c.offDays || [0, 6]).forEach(function (d) { off[d] = true; });
+    (c.holidays || []).forEach(function (h) { dates[h.replace(/-/g, "_")] = true; });
+    installCalendar({name: c.name || "", off: off, dates: dates});
   }
 
   function toProject(xmlText) {
@@ -180,5 +195,9 @@ var MSPDI = (function () {
     };
   }
 
-  return {toProject: toProject};
+  return {
+    toProject: toProject,
+    useCalendar: useCalendar,
+    currentCalendar: function () { return current; }
+  };
 })();

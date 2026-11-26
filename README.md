@@ -15,6 +15,16 @@ Fork de [robicch/jQueryGantt](https://github.com/robicch/jQueryGantt) qui ouvre 
 
 Le fichier est lu sur place : rien n'est envoyé sur un serveur.
 
+## Jours chômés dans un projet JSON
+
+Un projet JSON peut porter son calendrier sous la clé `calendar` :
+
+```json
+"calendar": {"name": "Chantier", "offDays": [0, 6], "holidays": ["2027-03-29", "2027-05-06"]}
+```
+
+`offDays` liste les jours de la semaine chômés (0 = dimanche, 6 = samedi) et `holidays` les dates non travaillées. Le calendrier est appliqué à l'ouverture, avant le calcul des durées, et conservé à l'enregistrement.
+
 ## Utilisation
 
 1. Dans MS Project : Fichier > Enregistrer sous, type « Format XML ».

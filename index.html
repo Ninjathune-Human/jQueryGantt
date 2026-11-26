@@ -207,6 +207,7 @@ function upload(uploadedFile) {
         if (imported.info.warnings.length) alert(msg);
       } else {
         intern = JSON.parse(content); // Array of Objects.
+        if (intern.calendar) MSPDI.useCalendar(intern.calendar); // jours chômés du projet, avant le calcul des durées
       }
     } catch (err) {
       alert(err.message);
@@ -228,6 +229,7 @@ function saveGanttOnServer() {
   //saveInLocalStorage();
 
   var prj = ge.saveProject();
+  if (MSPDI.currentCalendar()) prj.calendar = MSPDI.currentCalendar(); // garde les jours chômés dans le JSON
 
   download(JSON.stringify(prj, null, '\t'), "MyProject.json", "application/json");
 
